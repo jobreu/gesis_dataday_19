@@ -1,5 +1,5 @@
 # gesis_dataday_19
-Materialien für den Workshop "Forschungsdaten selbst analysieren mit R" (GESIS DataDay 2019)
+Materialien für den Workshop "Forschungsdaten selbst analysieren mit R", [GESIS DataDay 2019](https://www.gesis.org/angebot/veranstaltungen/gesis-tagungen/dataday2019/)
 
 ---
 
