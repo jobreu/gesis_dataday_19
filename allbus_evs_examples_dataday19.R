@@ -1,6 +1,6 @@
 # benötigte Pakete installieren und laden ####
 
-for (pack in c("rstudioapi", "tidyverse", "gesis", "haven")) {
+for (pack in c("rstudioapi", "tidyverse", "gesis", "haven", "ggmap", "ggthemes")) {
   if(!(pack %in% installed.packages()[,1])) {
     install.packages(pack)
   }
@@ -97,7 +97,8 @@ ggplot(fremd_land, aes(x = land, y = mean)) +
        y = "",
        title = "Durch die vielen Ausländer in Deutschland fühlt man sich zunehmend \nals Fremder im eigenen Land.",
        subtitle = "1 = Stimme überhaupt nicht zu, 7 = Stimme voll und ganz zu",
-       caption = "Quelle: ALLBUS 2016. GESIS Datenarchiv, Köln. ZA5250 Datenfile Version 2.1.0, doi:10.4232/1.12796")
+       caption = "Quelle: ALLBUS 2016. GESIS Datenarchiv, Köln. ZA5250 Datenfile Version 2.1.0, doi:10.4232/1.12796") +
+  theme_calc()
 
 bereicher_land <- migration_att %>%
   group_by(land) %>%
@@ -118,49 +119,8 @@ ggplot(bereicher_land, aes(x = land, y = mean)) +
        y = "",
        title = "Durch die vielen Ausländer in Deutschland fühlt man sich zunehmend \nals Fremder im eigenen Land.",
        subtitle = "1 = Stimme überhaupt nicht zu, 7 = Stimme voll und ganz zu",
-       caption = "Quelle: ALLBUS 2016. GESIS Datenarchiv, Köln. ZA5250 Datenfile Version 2.1.0, doi:10.4232/1.12796")
-
-fremd_ew <- migration_att %>%
-  group_by(eastwest) %>%
-  summarise(n=n(),
-            mean=mean(ma09, na.rm = T),
-            sd=sd(ma09, na.rm = T)) %>%
-  mutate(se=sd/sqrt(n)) %>%
-  mutate(ic=se * qt((1-0.05)/2 + .5, n-1))
-
-fremd_ew
-
-ggplot(fremd_ew, aes(x = eastwest, y = mean)) + 
-  geom_point(aes(size = n)) +
-  geom_errorbar(aes(ymin = mean-ic, ymax = mean+ic), width = .1) +
-  scale_y_continuous(expand = c(0,0),
-                     limits = c(1,7)) +
-  labs(x = "",
-       y = "",
-       title = "Durch die vielen Ausländer in Deutschland fühlt man sich zunehmend \nals Fremder im eigenen Land.",
-       subtitle = "1 = Stimme überhaupt nicht zu, 7 = Stimme voll und ganz zu",
-       caption = "Quelle: ALLBUS 2016. GESIS Datenarchiv, Köln. ZA5250 Datenfile Version 2.1.0, doi:10.4232/1.12796")
-
-bereicher_ew <- migration_att %>%
-  group_by(eastwest) %>%
-  summarise(n=n(),
-            mean=mean(mp03, na.rm = T),
-            sd=sd(mp03, na.rm = T)) %>%
-  mutate(se=sd/sqrt(n)) %>%
-  mutate(ic=se * qt((1-0.05)/2 + .5, n-1))
-
-bereicher_ew
-
-ggplot(bereicher_ew, aes(x = eastwest, y = mean)) + 
-  geom_point(aes(size = n)) +
-  geom_errorbar(aes(ymin = mean-ic, ymax = mean+ic), width = .1) +
-  scale_y_continuous(expand = c(0,0),
-                     limits = c(1,7)) +
-  labs(x = "",
-       y = "",
-       title = "Die in Deutschland lebenden Ausländer sind eine Bereicherung für die Kultur in Deutschland.",
-       subtitle = "1 = Stimme überhaupt nicht zu, 7 = Stimme voll und ganz zu",
-       caption = "Quelle: ALLBUS 2016. GESIS Datenarchiv, Köln. ZA5250 Datenfile Version 2.1.0, doi:10.4232/1.12796")
+       caption = "Quelle: ALLBUS 2016. GESIS Datenarchiv, Köln. ZA5250 Datenfile Version 2.1.0, doi:10.4232/1.12796") + 
+theme_calc()
   
 
 # Variablenwerte rekodieren (0 = "nein")
@@ -192,6 +152,9 @@ contact_long <- contact %>%
   summarise(sum = sum(yes_no), n = n()) %>% 
   mutate (Anteil = (sum/n)*100)
 
+# In welchen Jahren wurden die entsprechenden Fragen gestellt?
+unique(contact_long$year)
+
 # Zeitreihen im Ost-West-Vgl. plotten
 contact_long %>% 
   ggplot(aes(x = year, y = Anteil, color = eastwest, shape = eastwest)) +
@@ -202,9 +165,11 @@ contact_long %>%
                      limits = c(0,100),
                      labels = c("0%", "10%", "20%", "30%", "40%" , "50%", "60%", "70%", "80%", "90%", "100%")) +
   ylab("Anteil der Befragten mit Kontakten") +
-  scale_x_continuous(breaks = seq(1980, 2016, 2)) +
-  theme(axis.text.x = element_text (angle = 90),
-        legend.title=element_blank()) +
+  scale_x_continuous(breaks = c(1980, 1984, 1988, 1990, 1994, 1996, 2000, 2002, 2006, 2010, 2012, 2016)) +
+  theme(axis.text.x = element_text (angle = 90, vjust = 0.5),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.title = element_blank()) +
   xlab(NULL) +
   facet_wrap(~type_of_contact, scales = "free") +
   ggtitle("Kontakte zwischen Deutschen und Ausländern",
@@ -221,3 +186,183 @@ get_datasets("0009") %>%
 download_dataset(s, doi = "7500", path = "./data", filetype = ".sav", purpose = 1)
 # Datei muss in diesem Fall noch entpackt werden
 unzip("./data/ZA7500_v1-0-0.sav.zip", exdir = "./data")
+
+# Mit dem folgenden Befehl kann man auch das Codebuch für die Studie herunterladen
+# download_codebook(doi = "7500", path = "./data")
+
+# EVS-2017-Pre-Release-Daten einlesen und explorieren
+
+evs_2017 <- read_sav("data/ZA7500_v1-0-0.sav")
+dim(evs_2017) # Anzahl der Befragten und Variablen
+names(evs_2017) # Variablennamen (Codebuch zum Verständnis benötigt)
+
+# Variablen von Interesse auswählen und bearbeiten
+pol_evs_2017 <- evs_2017 %>% 
+  select(country, v124, v131, v142, v144) %>% 
+  mutate(country = as_factor(country),
+         v124 = recode(as.numeric(v124), "1" = 4,
+                       "2" = 3,
+                       "3" = 2,
+                       "4" = 1),
+         v131 = recode(as.numeric(v131), "1" = 4,
+                       "2" = 3,
+                       "3" = 2,
+                       "4" = 1))
+
+# Weltkartendaten laden
+world <- map_data("world")
+
+# Daten auf Länderebene aggregieren
+pol_country_evs_2017 <- pol_evs_2017 %>% 
+  group_by(country) %>% 
+  summarize_all(mean, na.rm = T)
+
+# Karten- und EVS-Daten verbinden
+evs_map_2017 <- world %>% 
+  left_join(pol_country_evs_2017, by = c("region" = "country"))
+
+# Karte zu Vertrauen in EU plotten
+ggplot(data = evs_map_2017, aes(x = long, y = lat, group = group, fill = v124)) + 
+  geom_polygon(color = "white") + 
+  xlim(-25, 47.0) + ylim(35, 70) +
+  theme_map() +
+  theme(plot.title = element_text(face="bold", size = 16)) +
+  labs(title = "Vertrauen in die EU 2017",
+       subtitle = "1 = Überhaupt kein Vertrauen, 4 = Sehr viel Vertrauen",
+       fill = "",
+       caption = "Quelle: European Values Study 2017: Integrated Dataset (EVS 2017). GESIS Datenarchiv, Köln. ZA7500 Datenfile Version 1.0.0, doi:10.4232/1.13090") +
+  scale_fill_distiller(breaks = c(1, 1.5, 2, 2.5, 3, 3.5, 4), palette = "RdYlGn", direction = 1, limits = c(1,4))
+
+# Plot exportieren
+ggsave("./plots/vertrauen_eu_evs_2017.png")
+
+# Karte zu Vertrauen in Regierung plotten
+ggplot(data = evs_map_2017, aes(x = long, y = lat, group = group, fill = v131)) + 
+  geom_polygon(color = "white") + 
+  xlim(-25, 47.0) + ylim(35, 70) +
+  theme_map() +
+  theme(plot.title = element_text(face="bold", size = 16)) +
+  labs(title = "Vertrauen in die Regierung 2017",
+       subtitle = "1 = Überhaupt kein Vertrauen, 4 = Sehr viel Vertrauen",
+       fill = "",
+       caption = "Quelle: European Values Study 2017: Integrated Dataset (EVS 2017). GESIS Datenarchiv, Köln. ZA7500 Datenfile Version 1.0.0, doi:10.4232/1.13090") +
+  scale_fill_distiller(breaks = c(1, 1.5, 2, 2.5, 3, 3.5, 4), palette = "RdYlGn", direction = 1, limits = c(1,4))
+
+# Plot exportieren
+ggsave("./plots/vertrauen_regierung_evs_2017.png")
+
+# Karte zu Wichtigkeit von Demokratie plotten
+ggplot(data = evs_map_2017, aes(x = long, y = lat, group = group, fill = v142)) + 
+  geom_polygon(color = "white") + 
+  xlim(-25, 47.0) + ylim(35, 70) +
+  theme_map() +
+  theme(plot.title = element_text(face="bold", size = 14)) +
+  labs(title = "Wie wichtig ist es für Sie, in einem Land zu leben, das demokratisch regiert wird?",
+       subtitle = "1 = Überhaupt nicht wichtig, 10 = Absolut wichtig",
+       fill = "",
+       caption = "Quelle: European Values Study 2017: Integrated Dataset (EVS 2017). GESIS Datenarchiv, Köln. ZA7500 Datenfile Version 1.0.0, doi:10.4232/1.13090") +
+  scale_fill_distiller(palette = "RdYlGn", direction = 1)
+
+# Plot exportieren
+ggsave("./plots/wichtig_demokratie_evs_2017.png")
+
+# Karte zu Zufriedenheit mit pol. System plotten
+ggplot(data = evs_map_2017, aes(x = long, y = lat, group = group, fill = v144)) + 
+  geom_polygon(color = "white") + 
+  xlim(-25, 47.0) + ylim(35, 70) +
+  theme_map() +
+  theme(plot.title = element_text(face="bold", size = 13)) +
+  labs(title = "Wie zufrieden sind Sie damit, wie das politische System in Ihrem Land heutzutage funktioniert?",
+       subtitle = "1 = Überhaupt nicht zufrieden, 10 = Voll und ganz zufrieden",
+       fill = "",
+       caption = "Quelle: European Values Study 2017: Integrated Dataset (EVS 2017). GESIS Datenarchiv, Köln. ZA7500 Datenfile Version 1.0.0, doi:10.4232/1.13090") +
+  scale_fill_distiller(palette = "RdYlGn", direction = 1)
+
+# Plot exportieren
+ggsave("./plots/zufrieden_system_evs_2017.png")
+
+# EVS 2008 ####
+# Alle Länder + Vgl. mit 2017
+# Pre-Release des integrierten EVS-Datensatzes 2008 herunterladen (Daten aus 16 Ländern)
+download_dataset(s, doi = "4800", path = "./data", filetype = ".sav", purpose = 1)
+# Datei muss in diesem Fall noch entpackt werden
+unzip("./data/ZA4800_v4-0-0.sav.zip", exdir = "./data")
+
+# Mit dem folgenden Befehl kann man auch das Codebuch für die Studie herunterladen
+# download_codebook(doi = "4800", path = "./data")
+
+# EVS-2008-Pre-Release-Daten einlesen und explorieren
+
+evs_2008 <- read_sav("data/ZA4800_v4-0-0.sav")
+dim(evs_2008) # Anzahl der Befragten und Variablen
+names(evs_2008) # Variablennamen (Codebuch zum Verständnis benötigt)
+
+# Variablen von Interesse auswählen und bearbeiten
+# Wichtigkeit von Demokratie und Zufriedenheit mit pol. System wurden im EVS 2008 nicht abgefragt
+pol_evs_2008 <- evs_2008 %>% 
+  select(country, v214, v222) %>% 
+  mutate(country = as_factor(country),
+         v214 = recode(as.numeric(v214), "1" = 4,
+                       "2" = 3,
+                       "3" = 2,
+                       "4" = 1),
+         v222 = recode(as.numeric(v222), "1" = 4,
+                       "2" = 3,
+                       "3" = 2,
+                       "4" = 1))
+
+# Weltkartendaten laden (falls nicht bereits für EVS 2017 geschehen)
+# world <- map_data("world")
+
+# Daten auf Länderebene aggregieren
+pol_country_evs_2008 <- pol_evs_2008 %>% 
+  group_by(country) %>% 
+  summarize_all(mean, na.rm = T)
+
+# Welche Ländernamen unterscheiden sich zwischen den Karten- und EVS-Daten?
+pol_country_evs_2008 %>% anti_join(world, by = c("country" = "region"))
+
+View(unique(world$region))
+
+pol_country_evs_2008 <- pol_country_evs_2008 %>% 
+  mutate(country = recode(country, `Bosnia Herzegovina` = 'Bosnia and Herzegovina',
+                          `Slovak Republic` = 'Slovakia',
+                          `Russian Federation` = 'Russia',
+                          `Great Britain` = 'UK'))
+
+world <- world %>%
+  mutate(region = ifelse(region == "UK" & subregion == "Northern Ireland", "Northern Ireland", region))
+
+# Karten- und EVS-Daten verbinden
+evs_map_2008 <- world %>% 
+  left_join(pol_country_evs_2008, by = c("region" = "country"))
+
+# Karte zu Vertrauen in EU plotten
+ggplot(data = evs_map_2008, aes(x = long, y = lat, group = group, fill = v214)) + 
+  geom_polygon(color = "white") + 
+  xlim(-25, 47.0) + ylim(35, 70) +
+  theme_map() +
+  theme(plot.title = element_text(face="bold", size = 16)) +
+  labs(title = "Vertrauen in die EU 2008",
+       subtitle = "1 = Überhaupt kein Vertrauen, 4 = Sehr viel Vertrauen",
+       fill = "",
+       caption = "Quelle: European Values Study 2008: Integrated Dataset (EVS 2008). GESIS Datenarchiv, Köln. ZA4800 Datenfile Version 4.0.0, doi:10.4232/1.12458") +
+  scale_fill_distiller(breaks = c(1, 1.5, 2, 2.5, 3, 3.5, 4), palette = "RdYlGn", direction = 1, limits = c(1,4))
+
+# Plot exportieren
+ggsave("./plots/vertrauen_eu_evs_2008.png")
+
+# Karte zu Vertrauen in Regierung plotten
+ggplot(data = evs_map_2008, aes(x = long, y = lat, group = group, fill = v222)) + 
+  geom_polygon(color = "white") + 
+  xlim(-25, 47.0) + ylim(35, 70) +
+  theme_map() +
+  theme(plot.title = element_text(face="bold", size = 16)) +
+  labs(title = "Vertrauen in die Regierung 2008",
+       subtitle = "1 = Überhaupt kein Vertrauen, 4 = Sehr viel Vertrauen",
+       fill = "",
+       caption = "Quelle:European Values Study 2008: Integrated Dataset (EVS 2008). GESIS Datenarchiv, Köln. ZA4800 Datenfile Version 4.0.0, doi:10.4232/1.12458") +
+  scale_fill_distiller(breaks = c(1, 1.5, 2, 2.5, 3, 3.5, 4), palette = "RdYlGn", direction = 1, limits = c(1,4))
+
+# Plot exportieren
+ggsave("./plots/vertrauen_regierung_evs_2017.png")

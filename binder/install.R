@@ -1,2 +1,5 @@
 install.packages('tidyverse')
 install.packages('gesis')
+install.packages('haven')
+install.packages('ggmap')
+install.packages('ggthemes')
