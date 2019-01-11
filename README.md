@@ -17,3 +17,15 @@ Für den Einstieg in R gibt es auch zahlreiche Präsenzkurse. Bei GESIS bietet [
 
 ## Quellen
 Für die Beispiele werden Daten aus der Allgemeinen Bevölkerungsumfrage der Sozialwissenschaften [ALLBUS](https://www.gesis.org/allbus/allbus/) sowie der European Value Study [EVS](https://europeanvaluesstudy.eu/) verwendet.
+
+Vollständige Zitationen für die verwendeten Datensätze:
+
+GESIS - Leibniz-Institut für Sozialwissenschaften (2018): Allgemeine Bevölkerungsumfrage der Sozialwissenschaften ALLBUScompact - Kumulation 1980-2016. GESIS Datenarchiv, Köln. ZA4587 Datenfile Version 1.0.0, doi:10.4232/1.13048
+
+GESIS - Leibniz-Institut für Sozialwissenschaften (2017): Allgemeine Bevölkerungsumfrage der Sozialwissenschaften ALLBUS 2016. GESIS Datenarchiv, Köln. ZA5250 Datenfile Version 2.1.0, doi:10.4232/1.12796
+
+EVS (2018): European Values Study 2017: Integrated Dataset (EVS 2017). GESIS Datenarchiv, Köln. ZA7500 Datenfile Version 1.0.0, doi:10.4232/1.13090
+
+EVS (2016): European Values Study 2008: Integrated Dataset (EVS 2008). GESIS Datenarchiv, Köln. ZA4800 Datenfile Version 4.0.0, doi:10.4232/1.12458
+
+Die Erstellung der Karten für die EVS-Daten orientiert sich an einem [Blog-Post von Alexandru Cernat](http://www.alexcernat.com/freesurveydata-european-values-study-2017/).
