@@ -5,6 +5,9 @@
 # Project files
 *.Rproj
 
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
 # Session Data files
 .RData
 
