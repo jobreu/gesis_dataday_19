@@ -228,7 +228,8 @@ pol_country_evs_2017 <- pol_evs_2017 %>%
   summarize_all(mean, na.rm = T)
 
 # Welche Ländernamen unterscheiden sich zwischen den Karten- und EVS-Daten?
-pol_country_evs_2017 %>% anti_join(world, by = c("country" = "region"))
+pol_country_evs_2017 %>% 
+  anti_join(world, by = c("country" = "region"))
 View(unique(world$region))
 
 # Länder in den EVS-Daten entsprechend umbenennen
