@@ -23,10 +23,12 @@ s <- login(username = "", password = "")
 get_study_groups()
 
 # Welche ALLBUS-Datensätze gibt es im DBK?
-get_datasets("0007") %>% print(n=100)
+get_datasets("0007") %>% 
+  print(n = 100)
 
 # Welche EVS-Datensätze gibt es im DBK?
-get_datasets("0009") %>% print(n=100)
+get_datasets("0009") %>% 
+  print(n = 100)
 
 # ALLBUS 1980-2016 ####
 
