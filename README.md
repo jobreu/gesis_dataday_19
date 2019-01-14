@@ -3,7 +3,7 @@ Materialien für den Workshop "Forschungsdaten selbst analysieren mit R", [GESIS
 
 Um das Jupyter-Notebook für diesen Workshop zu starten, klicken Sie einfach auf den "Launch Binder"-Button. Auf der Seite, die sich dann nach kurzer Zeit öffnen sollte, klicken Sie dann die Datei allbus_evs_examples_dataday19.ipynb an.
 
-
+[![Binder](https://notebooks.gesis.org/binder/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/jobreu/gesis_dataday_19/master)
 
 Wenn Sie das vollständige Repository herunterladen und lokal speichern wollen, klicken Sie auf den grünen "Clone or download"-Button und wählen dann "Download ZIP" aus.
 
