@@ -182,7 +182,7 @@ ggplot(bereicher_land, aes(x = land, y = mean)) +
                      limits = c(1,7)) +
   labs(x = "",
        y = "",
-       title = "Durch die vielen Ausländer in Deutschland fühlt man sich zunehmend \nals Fremder im eigenen Land.",
+       title = "Die in Deutschland lebenden Ausländer \nsind eine Bereicherung für die Kultur in Deutschland.",
        subtitle = "1 = Stimme überhaupt nicht zu, 7 = Stimme voll und ganz zu",
        caption = "Quelle: ALLBUS 2016. GESIS Datenarchiv, Köln. ZA5250 Datenfile Version 2.1.0, doi:10.4232/1.12796") + 
 theme_calc()
