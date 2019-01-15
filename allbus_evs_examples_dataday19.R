@@ -355,9 +355,10 @@ pol_country_evs_2008 <- pol_country_evs_2008 %>%
                           `Russian Federation` = 'Russia',
                           `Great Britain` = 'UK'))
 
-# Nordirland in EVS-Daten als eigenständiges Land, in Kartendaten jedoch als subregion (nicht region)
+# Nordirland & Nordzypern in EVS-Daten als eigenständige Länder, in Kartendaten jedoch als subregion (nicht region)
 world <- world %>%
-  mutate(region = ifelse(region == "UK" & subregion == "Northern Ireland", "Northern Ireland", region))
+  mutate(region = ifelse(region == "UK" & subregion == "Northern Ireland", "Northern Ireland",
+                         ifelse(region == "Cyprus" & !is.na(subregion), "Northern Cyprus", region)))
 
 # Karten- und EVS-Daten verbinden
 evs_map_2008 <- world %>% 
