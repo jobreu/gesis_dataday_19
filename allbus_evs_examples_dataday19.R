@@ -15,7 +15,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ifelse(!dir.exists(file.path(".", "data")), dir.create(file.path(".", "data")), FALSE)
 ifelse(!dir.exists(file.path(".", "plots")), dir.create(file.path(".", "plots")), FALSE)
 
-# DBK-Session mit eigenen Login-Daten initialisieren
+# Objekt mit eigenen DBK-Login-Daten erstellen
 # username = E-Mail-Adresse, die bei der DBK-Anmeldung verwendet wurde
 s <- login(username = "", password = "")
 
