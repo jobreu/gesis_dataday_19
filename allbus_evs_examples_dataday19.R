@@ -51,6 +51,7 @@ contact <- allbus_kum %>%
          eastwest = recode(eastwest,
                            "ALTE BUNDESLAENDER" = "Westdeutschland",
                            "NEUE BUNDESLAENDER" = "Ostdeutschland"),
+         wghtpt = na_if(wghtpt, 0), # Wert 0 = Gewicht konnte nicht generiert werden
          mc01 = recode(as.numeric(mc01), "2"= 0), # Variablenwerte rekodieren (0 = "nein")
          mc02 = recode(as.numeric(mc02), "2"= 0),
          mc03 = recode(as.numeric(mc03), "2"= 0),
@@ -61,9 +62,10 @@ contact <- allbus_kum %>%
          mc04_w = mc04 * wghtpt)
 
 # Daten fürs Plotten umstrukturieren (vom Wide- ins Long-Format)
-contact_long <- contact %>% 
-  select(year, eastwest, mc01_w:mc04_w) %>% 
-  gather(key = type_of_contact, value = yes_no, -year, -eastwest) %>%
+contact_long <- contact %>%
+  filter(!is.na(wghtpt)) %>% 
+  select(year, eastwest, mc01_w:mc04_w, wghtpt) %>% 
+  gather(key = type_of_contact, value = yes_no, -year, -eastwest, -wghtpt) %>%
   mutate(type_of_contact = recode(type_of_contact,
                                   "mc01_w" = "In der Familie",
                                   "mc02_w" = "Am Arbeitsplatz",
@@ -71,7 +73,7 @@ contact_long <- contact %>%
                                   "mc04_w" = "Im Freundeskreis")) %>%
   filter(!is.na(yes_no)) %>% 
   group_by(year, eastwest, type_of_contact) %>% 
-  summarise(sum = sum(yes_no), n = n()) %>% 
+  summarise(sum = sum(yes_no), n = sum(wghtpt)) %>% 
   mutate (Anteil = (sum/n)*100)
 
 # In welchen Jahren wurden die entsprechenden Fragen gestellt?
