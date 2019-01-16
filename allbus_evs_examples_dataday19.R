@@ -33,8 +33,9 @@ get_datasets("0009") %>%
 # ALLBUS 1980-2016 ####
 
 # ALLBUScompact - Kumulation 1980-2016 herunterladen (Studiennr. = ZA4587)
-# Dateityp (filetype) = SPSS, Verwendungszweck (purpose) = wiss. Forschung
-download_dataset(s, doi = "4587", path = "./data", filetype = ".sav", purpose = 1)
+# Dateityp (filetype) = SPSS, Verwendungszweck (purpose) = Weiterbildung und Qualifikation (für diesen Workshop)
+# generell gilt: Benutzungsordnung beachten (siehe https://www.gesis.org/fileadmin/upload/dienstleistung/daten/umfragedaten/_bgordnung_bestellen/2018-05-25_Benutzungsordnung_GESIS_DAS.pdf)
+download_dataset(s, doi = "4587", path = "./data", filetype = ".sav", purpose = 6)
 
 # Mit dem folgenden Befehl kann man auch das Codebuch für die Studie herunterladen
 # download_codebook(doi = "4587", path = "./data")
@@ -106,7 +107,9 @@ ggsave("./plots/Kontakte_mit_Auslaendern_ALLBUS_1980-2016.png")
 # Warum Vergleiche zwischen Bundesländern problematisch sind am Bsp. des ALLBUS 2016 ####
 
 # ALLBUS 2016 herunterladen
-download_dataset(s, doi = "5250", path = "./data", filetype = ".sav", purpose = 1)
+# Dateityp (filetype) = SPSS, Verwendungszweck (purpose) = Weiterbildung und Qualifikation (für diesen Workshop)
+# generell gilt: Benutzungsordnung beachten (siehe https://www.gesis.org/fileadmin/upload/dienstleistung/daten/umfragedaten/_bgordnung_bestellen/2018-05-25_Benutzungsordnung_GESIS_DAS.pdf)
+download_dataset(s, doi = "5250", path = "./data", filetype = ".sav", purpose = 6)
 
 # Datei muss in diesem Fall noch entpackt werden
 unzip("./data/ZA5250_v2-1-0.sav.zip", exdir = "./data")
@@ -196,7 +199,10 @@ get_datasets("0009") %>%
   View("Verfuegbare EVS-Datensaetze")
 
 # Pre-Release des integrierten EVS-Datensatzes 2017 herunterladen (Daten aus 16 Ländern)
-download_dataset(s, doi = "7500", path = "./data", filetype = ".sav", purpose = 1)
+# Dateityp (filetype) = SPSS, Verwendungszweck (purpose) = Weiterbildung und Qualifikation (für diesen Workshop)
+# generell gilt: Benutzungsordnung beachten (siehe https://www.gesis.org/fileadmin/upload/dienstleistung/daten/umfragedaten/_bgordnung_bestellen/2018-05-25_Benutzungsordnung_GESIS_DAS.pdf)
+download_dataset(s, doi = "7500", path = "./data", filetype = ".sav", purpose = 6)
+
 # Datei muss in diesem Fall noch entpackt werden
 unzip("./data/ZA7500_v1-0-0.sav.zip", exdir = "./data")
 
@@ -312,16 +318,18 @@ ggsave("./plots/zufrieden_system_evs_2017.png")
 # EVS 2008 ####
 # Alle Länder + Vgl. mit 2017
 
-# Pre-Release des integrierten EVS-Datensatzes 2008 herunterladen (Daten aus 16 Ländern)
-download_dataset(s, doi = "4800", path = "./data", filetype = ".sav", purpose = 1)
+# EVS-Datensatz 2008 herunterladen
+# Dateityp (filetype) = SPSS, Verwendungszweck (purpose) = Weiterbildung und Qualifikation (für diesen Workshop)
+# generell gilt: Benutzungsordnung beachten (siehe https://www.gesis.org/fileadmin/upload/dienstleistung/daten/umfragedaten/_bgordnung_bestellen/2018-05-25_Benutzungsordnung_GESIS_DAS.pdf)
+download_dataset(s, doi = "4800", path = "./data", filetype = ".sav", purpose = 6)
+
 # Datei muss in diesem Fall noch entpackt werden
 unzip("./data/ZA4800_v4-0-0.sav.zip", exdir = "./data")
 
 # Mit dem folgenden Befehl kann man auch das Codebuch für die Studie herunterladen
 # download_codebook(doi = "4800", path = "./data")
 
-# EVS-2008-Pre-Release-Daten einlesen und explorieren
-
+# EVS-2008-Daten einlesen und explorieren
 evs_2008 <- read_sav("data/ZA4800_v4-0-0.sav")
 dim(evs_2008) # Anzahl der Befragten und Variablen
 names(evs_2008) # Variablennamen (Codebuch zum Verständnis benötigt)
